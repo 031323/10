@@ -2,26 +2,62 @@
 <body style="font-family:monospace">
 </div>
 <div>x=
-[<input  id="i1" style="font-family:monospace"></input>];
-<button style="font-family:monospace">
+[<input oninput="ic()" id="i1" style="font-family:monospace"></input>];
+<button style="font-family:monospace" onclick="c()">
 ?
 </button>
 </div>
 <div id="d1" style="white-space: pre;font-family:monospace">
 <script>
+i=0
+x=[]
+function ic()
+{
+	i1.value=i1.value.replace(/[^0-9,-.]/gi, '');
+}
+function c()
+{
+	try
+	{
+		eval("x="+i1.value);
+	}
+	catch(e)
+	{
+	}
+	if(eval('('+pm[i]+')(x)'))
+	{
+		i++;
+		if(i<pm.length)r()
+		else document.body.innerHTML="";
+	}
+}
+function r()
+{
+		i1.value="";
+		x=[];
+		d1.innerHTML=pm[i];
+		i1.focus();
+}
+i1.addEventListener("keypress",function(e)
+{
+  if(event.key==="Enter")c();
+}); 
 pm=
 [
 `
-function f(x)
+x=>
 {
-  return 1;
+  return x*x+x==380;
 }
 `,
 `
+x=>
+{
+  return Math.abs(Math.pow(x,10)+x-5)<0.001;
+}
 `
 ]
-d1.innerHTML=pm[0];
-i1.focus();
+r()
 </script>
 </body>
 </html>
