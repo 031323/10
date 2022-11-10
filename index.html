@@ -1,13 +1,26 @@
+<!doctype html>
 <html>
-<body style="font-family:monospace">
-</div>
-<div>x=[<input oninput="ic()" id="i1" style="font-family:monospace"></input>];
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10</title>
+</head>
+<body onresize="rd()" style="margin:0;font-family:monospace">
+<div style="margin:0.5em;">
+<span id="d2" style="display:inline-block;padding-right:0.25em;padding-left:0.25em;margin-bottom:1em;font-family:monospace;background-color:black;color:white"></span>
+<br>
+x=[<input oninput="ic()" id="i1" style="font-family:monospace"></input>];
 <button style="font-family:monospace" onclick="c()">
 ?
 </button>
 </div>
-<div id="d1" style="white-space: pre;font-family:monospace;tab-size:2">
+<div id="d3" style="margin:0 0.5em 0 0.5em;">
+<div id="d1" style="max-height:100%;scroll-snap-type: y mandatory;border:none grey;padding:0;background-color:rgb(240,240,240);overflow-y:scroll;white-space: pre-wrap;font-family:monospace;tab-size:2"></div></div>
 <script>
+function rd()
+{
+	d1.style.height=Math.floor((window.innerHeight-d3.offsetTop)/d1.children[0].clientHeight)*d1.children[0].clientHeight;
+}
 i=0
 x=[]
 function ic()
@@ -26,6 +39,7 @@ function c()
 	if(eval('('+pm[i]+')(x)'))
 	{
 		i++;
+		if(i==pm.length)i=0;
 		if(i<pm.length)r()
 		else document.body.innerHTML="";
 	}
@@ -34,7 +48,12 @@ function r()
 {
 		i1.value="";
 		x=[];
-		d1.innerText=pm[i];
+		let l=pm[i].split('\n');
+		let s="";
+		for(let i=0;i<l.length;i++)
+			s+='<div style="margin:0;padding:0;scroll-snap-align:start;">'+l[i].replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');+'</div>';
+		d1.innerHTML=s;
+		d2.innerText=String(i+1).padStart(4,'0');
 		i1.focus();
 }
 i1.addEventListener("keypress",function(e)
@@ -43,15 +62,13 @@ i1.addEventListener("keypress",function(e)
 }); 
 pm=
 [
-`
-x=>
+`x=>
 {
 	let z=x[0];
   return z*z==25;
 }
 `,
-`
-x=>
+`x=>
 {
 	if(x.length>100)return 0;
 	let p=[[0,2],[4,1],[2,4]];
@@ -68,6 +85,8 @@ x=>
 `
 ]
 r()
+rd()
+'a=b+c'.split(/([^A-Za-z0-9])/g)
 </script>
 </body>
 </html>
