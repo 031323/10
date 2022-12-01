@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>10</title>
+</head>
+<body onresize="rd()" style="text-align:center;background-color:black;margin:0;font-family:monospace;overflow:hidden">
+<div id="d" style='opacity:0;display:block;position:fixed;top:0;'>0</div>
+<canvas id="c" style='image-rendering: pixelated;'></canvas>
+<script>
+const sb=8;
+cc=c.getContext('2d');
+function rd()
+{
+	let p1=window.innerHeight;
+	let p2=window.innerWidth;
+	let b=Math.floor(d.getBoundingClientRect().height);
+	let bs1=Math.floor(p2/b);
+	let bs2=Math.floor(p1/b);
+	c.style.width=(bs1*b).toString()+"px";
+	c.style.height=(bs2*b).toString()+"px";
+	c.width=bs1*sb;
+	c.height=bs2*sb;
+	cc.fillStyle='#ffffffff';
+	cc.clearRect(0,0,c.width,c.height);
+}
+function nk(nk,p1,p2)
+{
+	let x1=0,x2=0;
+	for(x1=0;x1<sb;x1++)
+		for(x2=0;x2<sb;x2++)
+		{
+			if(cl[Math.floor(nk/(cl.s/8))*cl.s+x2*(cl.s/8)+(nk%(cl.s/8))]&(1<<x1))
+				cc.fillRect(p1*8+x1,p2*8+x2,1,1);
+		}
+}
+const cl=
+[
+  0x3E, 0x0C, 0x1E, 0x1E, 0x38, 0x3F, 0x1C, 0x3F, 0x1E, 0x1E, 0x63, 0x0E, 
+  0x33, 0x33, 0x2C, 0x03, 0x06, 0x30, 0x33, 0x33, 0x73, 0x0C, 0x30, 0x30, 
+  0x36, 0x1F, 0x03, 0x30, 0x33, 0x33, 0x6B, 0x0C, 0x1C, 0x1C, 0x33, 0x30, 
+  0x1F, 0x18, 0x1E, 0x3E, 0x67, 0x0C, 0x06, 0x30, 0x7F, 0x30, 0x33, 0x0C, 
+  0x33, 0x30, 0x63, 0x0C, 0x03, 0x33, 0x30, 0x33, 0x33, 0x06, 0x33, 0x18, 
+  0x3E, 0x3F, 0x3F, 0x1E, 0x30, 0x1E, 0x1E, 0x06, 0x1E, 0x0E, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+];
+cl.s=80;
+rd();
+</script>
+</body>
+</html>
