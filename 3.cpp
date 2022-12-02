@@ -3,17 +3,8 @@ bool jt=0;
 #ifdef EMSCRIPTEN
 #include<emscripten.h>
 #endif
-const char cl[]=
-{
-  0x3E, 0x0C, 0x1E, 0x1E, 0x38, 0x3F, 0x1C, 0x3F, 0x1E, 0x1E, 0x63, 0x0E, 
-  0x33, 0x33, 0x2C, 0x03, 0x06, 0x30, 0x33, 0x33, 0x73, 0x0C, 0x30, 0x30, 
-  0x36, 0x1F, 0x03, 0x30, 0x33, 0x33, 0x6B, 0x0C, 0x1C, 0x1C, 0x33, 0x30, 
-  0x1F, 0x18, 0x1E, 0x3E, 0x67, 0x0C, 0x06, 0x30, 0x7F, 0x30, 0x33, 0x0C, 
-  0x33, 0x30, 0x63, 0x0C, 0x03, 0x33, 0x30, 0x33, 0x33, 0x06, 0x33, 0x18, 
-  0x3E, 0x3F, 0x3F, 0x1E, 0x30, 0x1E, 0x1E, 0x06, 0x1E, 0x0E, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-};
-const int cls=80;
+#include"nc.xbm"
+const int cls=nc_width;
 struct
 {
 	SDL_Window* cp;
@@ -21,7 +12,7 @@ struct
 	SDL_Texture *mc1=NULL,*mc2=NULL;
 	bool cs=1;
 	int kg=0;
-	const int sp1=8,sp2=8;
+	const int sp1=8,sp2=16;
 	int s1,s2;
 	const int p1=12,p2=24;
 	SDL_Rect pd;
@@ -29,25 +20,29 @@ struct
 	int cns;
 	SDL_RendererInfo j;
 }st;
-void ns(int n,int p1,int p2)
+void ns(int n,int p1,int p2,bool v=0)
 {
-	for(int x1=0;x1<st.sp1;x1++)
-		for(int x2=0;x2<st.sp2;x2++)
+	for(int x2=0;x2<st.sp2;x2++)
+	{
+		unsigned char c=nc_bits[(n/(cls/st.sp1))*(cls/st.sp1)*st.sp2+x2*(cls/st.sp1)+(n%(cls/st.sp1))];
+		if(v)c=255-c;
+		for(int x1=0;x1<st.sp1;x1++)
 		{
-			if(cl[(n/(cls/8))*cls+x2*(cls/8)+(n%(cls/8))]&(1<<x1))
+			if(c&(1<<x1))
 			{
-				int s=(p2*8+x2)*st.cns+(p1*8+x1)*3;
+				int s=(p2*st.sp2+x2)*st.cns+(p1*st.sp1+x1)*3;
 				st.cn[s]=255;
 				st.cn[s+1]=255;
 				st.cn[s+2]=255;
 			}
 		}
+	}
 }
 void lk()
 {
 	SDL_LockTexture(st.mc1,NULL,(void**)&st.cn,&st.cns);
-	ns(1,1,1);
-	ns(0,2,1);
+	for(int i=0;i<10;i++)ns('0'+i,i,0,1);
+	for(int i=0;i<10;i++)ns('0'+i,9-i,1);
 	SDL_UnlockTexture(st.mc1);
 	SDL_SetRenderTarget(st.ck,st.mc2);
 	SDL_RenderCopy(st.ck,st.mc1,NULL,NULL);
