@@ -1,0 +1,10 @@
+*.o
+*.a
+*.os
+.sconsign.dblite
+compile_commands.json
+.cache
+yt
+node_modules
+yt.wasm
+yt.js
