@@ -12,9 +12,9 @@ struct
 	SDL_Texture *mc1=NULL,*mc2=NULL;
 	bool cs=1;
 	int kg=0;
-	const int sp1=8,sp2=16;
+	const int sp1=8,sp2=(nc_height>128)?16:8;
 	int s1,s2;
-	const int p1=12,p2=24;
+	const int p1=12,p2=sp2==8?32:24;
 	SDL_Rect pd;
 	unsigned char *cn;
 	int cns;
@@ -25,6 +25,7 @@ void ns(int n,int p1,int p2,bool v=0)
 	for(int x2=0;x2<st.sp2;x2++)
 	{
 		unsigned char c=nc_bits[(n/(cls/st.sp1))*(cls/st.sp1)*st.sp2+x2*(cls/st.sp1)+(n%(cls/st.sp1))];
+		if(nc_bits[0]==255)c=255-c;
 		if(v)c=255-c;
 		for(int x1=0;x1<st.sp1;x1++)
 		{
