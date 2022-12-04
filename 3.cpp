@@ -42,8 +42,10 @@ void ns(int n,int p1,int p2,bool v=0)
 void lk()
 {
 	SDL_LockTexture(st.mc1,NULL,(void**)&st.cn,&st.cns);
-	for(int i=0;i<10;i++)ns('0'+i,i,0,1);
-	for(int i=0;i<10;i++)ns('0'+i,9-i,1);
+	for(int i=0;i<10;i++)ns(i,1+i,1,1);
+	for(int i=0;i<10;i++)ns(i,10-i,3);
+	for(int i=0;i<10;i++)ns(rand()%10,10-i,4);
+	for(int i=0;i<10;i++)ns(10,1+i,5);
 	SDL_UnlockTexture(st.mc1);
 	SDL_SetRenderTarget(st.ck,st.mc2);
 	SDL_RenderCopy(st.ck,st.mc1,NULL,NULL);
