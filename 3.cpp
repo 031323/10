@@ -91,7 +91,7 @@ void lk()
 	if(st.tp)
 	{
 		for(int i=0;i<10;i++)ns(i,1+(i%5)*3,st.s2-4+(int)(i/5)*2);
-		for(int i=11;i<16;i++)ns(i,1+(i-11)*3,st.s2-6);
+		for(int i=12;i<16;i++)ns(i,1+(i-11)*3,st.s2-6);
 		for(int k=1;k<st.s1-1;k++)ns(10,k,st.s2-7);
 		l2-=6;
 	}
