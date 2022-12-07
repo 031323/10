@@ -16,7 +16,7 @@ struct
 	bool cs=1;
 	int kg=0;
 	const int sp1=8,sp2=(nc_height>128)?16:8;
-	int s1,s2;
+	int s1,s2,l2=1,ps=1;
 	const int p1=15,p2=sp2==8?32:24;
 	SDL_Rect pd;
 	unsigned char *cn;
@@ -28,28 +28,39 @@ struct
 	int ds=0;
 	const int sk=64*1024;
 	sp* s;
-	bool plg=0;
+	bool plg=1;
 }st;
-void ns(int n,float p1,float p2,bool v=0)
+struct nl
 {
-	int s1=round(p1*st.sp1);
-	int s2=round(p2*st.sp2);
-	for(int x2=0;x2<st.sp2;x2++)
+	int n=0;
+	float p1=0,p2=0;
+	bool v=0;
+	unsigned char rm=255,hm=255,nm=255;
+	void operator()()
 	{
-		unsigned char c=nc_bits[(n/(cls/st.sp1))*(cls/st.sp1)*st.sp2+x2*(cls/st.sp1)+(n%(cls/st.sp1))];
-		if(nc_bits[0]==255)c=255-c;
-		if(v)c=255-c;
-		for(int x1=0;x1<st.sp1;x1++)
+		int s1=round(p1*st.sp1);
+		int s2=round(p2*st.sp2);
+		for(int x2=0;x2<st.sp2;x2++)
 		{
-			if(c&(1<<x1))
+			unsigned char c=nc_bits[(n/(cls/st.sp1))*(cls/st.sp1)*st.sp2+x2*(cls/st.sp1)+(n%(cls/st.sp1))];
+			if(nc_bits[0]==255)c=255-c;
+			if(v)c=255-c;
+			for(int x1=0;x1<st.sp1;x1++)
 			{
-				int s=(s2+x2)*st.cns+(s1+x1)*3;
-				st.cn[s]=255;
-				st.cn[s+1]=255;
-				st.cn[s+2]=255;
+				if(c&(1<<x1))
+				{
+					int s=(s2+x2)*st.cns+(s1+x1)*3;
+					st.cn[s]=rm;
+					st.cn[s+1]=hm;
+					st.cn[s+2]=nm;
+				}
 			}
 		}
 	}
+};
+void ns(int n,float p1,float p2,bool v=0)
+{
+	nl({.n=n,.p1=p1,.p2=p2,.v=v})();
 }
 void cnk(int k,int m1,int m2,float p1,float p2)
 {
@@ -69,6 +80,7 @@ void pss(int pk)
 void lk()
 {
 	SDL_LockTexture(st.mc1,NULL,(void**)&st.cn,&st.cns);
+	memset(st.cn,0,st.s2*st.cns*8);
 	const int ks=5,lsk=5;
 	for(int k=0,b=10;k<ks;k++,b*=10)ns((st.pk%b)*10/b,ks-k,1,1);
 	for(int k=0,b=10;(k<lsk&&st.ls*10>=b)||k==0;k++,b*=10)ns((st.ls%b)*10/b,st.s1-2-k,1);
@@ -83,11 +95,15 @@ void lk()
 		for(int k=1;k<st.s1-1;k++)ns(10,k,st.s2-7);
 		l2-=6;
 	}
+	st.l2=l2;
 	int ps=l1/(lsk+1);
+	st.ps=ps;
 	if(st.ls-st.ds>=ps*l2)st.ds=st.ls-ps*l2+1;
 	for(int sk=0;sk<ps*l2;sk++)
 		for(int k=0,b=10;(k<lsk&&st.s[sk+st.ds]*10>=b)||k==0;k++,b*=10)
-			ns((st.s[sk+st.ds]%b)*10/b,p1-2+(lsk+1)*(1+(int)(sk/l2))-k,p2+(sk%l2));
+			ns((st.s[sk+st.ds]%b)*10/b,p1-2+(lsk+1)*(1+(int)(sk/l2))-k,p2+(sk%l2),0&&(sk+st.ds==st.ls));
+	if(1)nl({.n=16,.p1=(float)(p1-1+(lsk+1)*(1+(int)((st.ls-st.ds)/l2))),.p2=(float)(p2+((st.ls-st.ds)%l2)),
+			.rm=255,.hm=255,.nm=255})();
 	SDL_UnlockTexture(st.mc1);
 	SDL_SetRenderTarget(st.ck,st.mc2);
 	SDL_RenderCopy(st.ck,st.mc1,NULL,NULL);
@@ -127,7 +143,7 @@ void mk()
 	SDL_SetTextureScaleMode(st.mc1,SDL_ScaleModeNearest);
 	st.mc2=SDL_CreateTexture(st.ck,SDL_PIXELFORMAT_RGB24,SDL_TEXTUREACCESS_TARGET,st.s1*st.sp1*t2,st.s2*st.sp2*t2);
 	SDL_SetTextureScaleMode(st.mc2,SDL_ScaleModeLinear);
-	lk();
+	st.plg=1;
 }
 #ifdef EMSCRIPTEN
 extern "C"
@@ -149,8 +165,35 @@ void nk()
 		if(g.type==SDL_WINDOWEVENT_RESIZED)
 			mk();
 		if(g.type==SDL_KEYDOWN)
+		{
 			if(g.key.keysym.sym==SDLK_ESCAPE)
 				st.cs=0;
+			else if(g.key.keysym.sym==SDLK_DOWN)
+			{
+				st.ls++;
+				st.plg=1;
+			}
+			else if(g.key.keysym.sym==SDLK_RIGHT)
+			{
+				st.ls+=st.l2;
+				if(st.ls-st.ds>=st.ps*st.l2)st.ds+=st.l2;
+				st.plg=1;
+			}
+			else if(g.key.keysym.sym==SDLK_UP)
+			{
+				if(st.ls>0)st.ls--;
+				if(st.ds>st.ls)st.ds=st.ls;
+				st.plg=1;
+			}
+			else if(g.key.keysym.sym==SDLK_LEFT)
+			{
+				if(st.ls>=st.l2)st.ls-=st.l2;
+				else {st.ls=0;st.ds=0;}
+				if(st.ds>st.ls)st.ds-=st.l2;
+				if(st.ds<0)st.ds=0;
+				st.plg=1;
+			}
+		}
 	}
 	if(st.plg){st.plg=0;lk();}
 }
