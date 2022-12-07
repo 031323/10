@@ -5,6 +5,9 @@ bool jt=0;
 #endif
 #include"nc.xbm"
 const int cls=nc_width;
+typedef uint16_t sp;
+const int pd=100;
+sp ps[10][pd]={};
 struct
 {
 	SDL_Window* cp;
@@ -14,14 +17,23 @@ struct
 	int kg=0;
 	const int sp1=8,sp2=(nc_height>128)?16:8;
 	int s1,s2;
-	const int p1=12,p2=sp2==8?32:24;
+	const int p1=15,p2=sp2==8?32:24;
 	SDL_Rect pd;
 	unsigned char *cn;
 	int cns;
 	SDL_RendererInfo j;
+	bool tp=0;
+	int pk=0;
+	int ls=0;
+	int ds=0;
+	const int sk=64*1024;
+	sp* s;
+	bool plg=0;
 }st;
-void ns(int n,int p1,int p2,bool v=0)
+void ns(int n,float p1,float p2,bool v=0)
 {
+	int s1=round(p1*st.sp1);
+	int s2=round(p2*st.sp2);
 	for(int x2=0;x2<st.sp2;x2++)
 	{
 		unsigned char c=nc_bits[(n/(cls/st.sp1))*(cls/st.sp1)*st.sp2+x2*(cls/st.sp1)+(n%(cls/st.sp1))];
@@ -31,7 +43,7 @@ void ns(int n,int p1,int p2,bool v=0)
 		{
 			if(c&(1<<x1))
 			{
-				int s=(p2*st.sp2+x2)*st.cns+(p1*st.sp1+x1)*3;
+				int s=(s2+x2)*st.cns+(s1+x1)*3;
 				st.cn[s]=255;
 				st.cn[s+1]=255;
 				st.cn[s+2]=255;
@@ -39,13 +51,43 @@ void ns(int n,int p1,int p2,bool v=0)
 		}
 	}
 }
+void cnk(int k,int m1,int m2,float p1,float p2)
+{
+	for(int x1=0;x1<m1;x1++)
+		for(int x2=0;x2<m2;x2++)
+		{
+			ns(k+x2*(cls/st.sp1)+x1,p1+x1,p2+x2);
+		}
+}
+void pss(int pk)
+{
+	st.pk=pk;
+	memset(st.s,0,sizeof(sp)*st.sk);
+	for(size_t k=0;k<pd;k++)
+		st.s[k]=ps[pk-1][k];
+}
 void lk()
 {
 	SDL_LockTexture(st.mc1,NULL,(void**)&st.cn,&st.cns);
-	for(int i=0;i<10;i++)ns(i,1+i,1,1);
-	for(int i=0;i<10;i++)ns(i,10-i,3);
-	for(int i=0;i<10;i++)ns(rand()%10,10-i,4);
-	for(int i=0;i<10;i++)ns(10,1+i,5);
+	const int ks=5,lsk=5;
+	for(int k=0,b=10;k<ks;k++,b*=10)ns((st.pk%b)*10/b,ks-k,1,1);
+	for(int k=0,b=10;(k<lsk&&st.ls*10>=b)||k==0;k++,b*=10)ns((st.ls%b)*10/b,st.s1-2-k,1);
+	if(0)cnk(23,1,2,st.s1-lsk-2,1);
+	for(int k=1;k<st.s1-1;k++)ns(10,k,2);
+	int l1=st.s1-2,l2=st.s2-4;
+	int p1=1,p2=3;
+	if(st.tp)
+	{
+		for(int i=0;i<10;i++)ns(i,1+(i%5)*3,st.s2-4+(int)(i/5)*2);
+		for(int i=11;i<16;i++)ns(i,1+(i-11)*3,st.s2-6);
+		for(int k=1;k<st.s1-1;k++)ns(10,k,st.s2-7);
+		l2-=6;
+	}
+	int ps=l1/(lsk+1);
+	if(st.ls-st.ds>=ps*l2)st.ds=st.ls-ps*l2+1;
+	for(int sk=0;sk<ps*l2;sk++)
+		for(int k=0,b=10;(k<lsk&&st.s[sk+st.ds]*10>=b)||k==0;k++,b*=10)
+			ns((st.s[sk+st.ds]%b)*10/b,p1-2+(lsk+1)*(1+(int)(sk/l2))-k,p2+(sk%l2));
 	SDL_UnlockTexture(st.mc1);
 	SDL_SetRenderTarget(st.ck,st.mc2);
 	SDL_RenderCopy(st.ck,st.mc1,NULL,NULL);
@@ -62,16 +104,27 @@ void mk()
 	int x1,x2;
 	SDL_GetWindowSize(st.cp,&x1,&x2);
 	if(0)printf("%dx%d\n",x1,x2);
-	st.s2=st.p2;
-	float d1=((float)x2/(float)(st.s2)*(float)st.sp1/(float)st.sp2);
-	st.s1=ceil((float)x1/d1);
+	if(x1>x2)
+	{
+		st.tp=0;
+		st.s2=st.p2;
+		float d1=((float)x2/(float)(st.s2)*(float)st.sp1/(float)st.sp2);
+		st.s1=ceil((float)x1/d1);
+	}
+	else
+	{
+		st.tp=1;
+		st.s1=st.p1;
+		float d2=((float)x1/(float)(st.s1)*(float)st.sp2/(float)st.sp1);
+		st.s2=floor((float)x2/d2);
+	}
 	st.pd.w=x1;
 	st.pd.h=st.s2*((float)x1/(float)(st.s1)*(float)st.sp2/(float)st.sp1);
 	st.pd.y=0;
 	st.pd.x=0;
+	int t2=ceil((float)x1/(float)(st.s1*st.sp1));
 	st.mc1=SDL_CreateTexture(st.ck,SDL_PIXELFORMAT_RGB24,SDL_TEXTUREACCESS_STREAMING,st.s1*st.sp1,st.s2*st.sp2);
 	SDL_SetTextureScaleMode(st.mc1,SDL_ScaleModeNearest);
-	int t2=ceil((float)x1/(float)(st.s1*st.sp1));
 	st.mc2=SDL_CreateTexture(st.ck,SDL_PIXELFORMAT_RGB24,SDL_TEXTUREACCESS_TARGET,st.s1*st.sp1*t2,st.s2*st.sp2*t2);
 	SDL_SetTextureScaleMode(st.mc2,SDL_ScaleModeLinear);
 	lk();
@@ -99,6 +152,7 @@ void nk()
 			if(g.key.keysym.sym==SDLK_ESCAPE)
 				st.cs=0;
 	}
+	if(st.plg){st.plg=0;lk();}
 }
 int main()
 {
@@ -116,9 +170,14 @@ int main()
 	if(0)
 	{
 		SDL_GetRenderDriverInfo(0,&st.j);
-		for(int k=0;k<st.j.num_texture_formats;k++)
+		for(unsigned int k=0;k<st.j.num_texture_formats;k++)
 			printf("%d\n",st.j.texture_formats[k]);
 	}
+	st.s=new sp[st.sk];
+	srand(100);
+	for(int k=0;k<pd;k++)
+		ps[0][k]=rand()%100;
+	pss(1);
 	mk();
 #ifndef EMSCRIPTEN
 	while(st.cs)
@@ -134,5 +193,6 @@ int main()
 	SDL_DestroyTexture(st.mc1);
 	SDL_DestroyTexture(st.mc2);
 	SDL_Quit();
+	delete st.s;
 	return 0;
 }

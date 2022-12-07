@@ -1,4 +1,4 @@
-e=Environment(COMPILATIONDB_USE_ABSPATH=True,CCFLAGS='-g')
+e=Environment(COMPILATIONDB_USE_ABSPATH=True,CCFLAGS='-g -Wall')
 e.ParseConfig('pkg-config --cflags --libs sdl2')
 e.Tool('compilation_db')
 e.CompilationDatabase()
