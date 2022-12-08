@@ -91,7 +91,7 @@ void lk()
 	if(st.tp)
 	{
 		for(int i=0;i<10;i++)ns(i,1+(i%5)*3,st.s2-4+(int)(i/5)*2);
-		for(int i=12;i<16;i++)ns(i,1+(i-11)*3,st.s2-6);
+		for(int i=11;i<16;i++)ns(i,1+(i-11)*3,st.s2-6);
 		for(int k=1;k<st.s1-1;k++)ns(10,k,st.s2-7);
 		l2-=6;
 	}
@@ -171,6 +171,7 @@ void nk()
 			else if(g.key.keysym.sym==SDLK_DOWN)
 			{
 				st.ls++;
+				if(st.ls-st.ds>=st.ps*st.l2)st.ds+=st.l2;
 				st.plg=1;
 			}
 			else if(g.key.keysym.sym==SDLK_RIGHT)
@@ -182,7 +183,7 @@ void nk()
 			else if(g.key.keysym.sym==SDLK_UP)
 			{
 				if(st.ls>0)st.ls--;
-				if(st.ds>st.ls)st.ds=st.ls;
+				if(st.ds>st.ls)st.ds-=st.l2;
 				st.plg=1;
 			}
 			else if(g.key.keysym.sym==SDLK_LEFT)
@@ -200,6 +201,7 @@ void nk()
 int main()
 {
 	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS);
+	SDL_ShowCursor(SDL_DISABLE);
 #ifdef EMSCRIPTEN
 	jt=1;
 	st.cp=SDL_CreateWindow(0,0,0,
