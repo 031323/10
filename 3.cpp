@@ -29,6 +29,7 @@ struct
 	const int sk=64*1024;
 	sp* s;
 	bool plg=1;
+	bool ks=([](){char *d=getenv("KS");return !(!d||d[0]=='0');})();
 }st;
 struct nl
 {
@@ -50,9 +51,9 @@ struct nl
 				if(c&(1<<x1))
 				{
 					int s=(s2+x2)*st.cns+(s1+x1)*3;
-					st.cn[s]=rm;
-					st.cn[s+1]=hm;
-					st.cn[s+2]=nm;
+					st.cn[s]=st.ks?255-rm:rm;
+					st.cn[s+1]=st.ks?255-hm:hm;
+					st.cn[s+2]=st.ks?255-nm:nm;
 				}
 			}
 		}
@@ -80,7 +81,7 @@ void pss(int pk)
 void lk()
 {
 	SDL_LockTexture(st.mc1,NULL,(void**)&st.cn,&st.cns);
-	memset(st.cn,0,st.s2*st.cns*8);
+	memset(st.cn,st.ks?255:0,st.s2*st.cns*8);
 	const int ks=5,lsk=5;
 	for(int k=0,b=10;k<ks;k++,b*=10)ns((st.pk%b)*10/b,ks-k,1,1);
 	for(int k=0,b=10;(k<lsk&&st.ls*10>=b)||k==0;k++,b*=10)ns((st.ls%b)*10/b,st.s1-2-k,1);
@@ -98,7 +99,8 @@ void lk()
 	st.l2=l2;
 	int ps=l1/(lsk+1);
 	st.ps=ps;
-	if(st.ls-st.ds>=ps*l2)st.ds=st.ls-ps*l2+1;
+	if(st.ds%st.l2)st.ds=(st.ds/st.l2)*st.l2;
+	while(st.ls-st.ds>=ps*l2)st.ds+=st.l2;
 	for(int sk=0;sk<ps*l2;sk++)
 		for(int k=0,b=10;(k<lsk&&st.s[sk+st.ds]*10>=b)||k==0;k++,b*=10)
 			ns((st.s[sk+st.ds]%b)*10/b,p1-2+(lsk+1)*(1+(int)(sk/l2))-k,p2+(sk%l2),0&&(sk+st.ds==st.ls));
