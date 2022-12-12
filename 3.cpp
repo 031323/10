@@ -6,7 +6,7 @@ bool jt=0;
 #include"nc.xbm"
 const int cls=nc_width;
 typedef uint16_t sp;
-const int pd=100;
+const int pd=1000;
 sp ps[10][pd]={};
 struct
 {
