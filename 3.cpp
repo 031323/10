@@ -142,9 +142,9 @@ void mk()
 	st.pd.x=0;
 	int t2=ceil((float)x1/(float)(st.s1*st.sp1));
 	st.mc1=SDL_CreateTexture(st.ck,SDL_PIXELFORMAT_RGB24,SDL_TEXTUREACCESS_STREAMING,st.s1*st.sp1,st.s2*st.sp2);
-	SDL_SetTextureScaleMode(st.mc1,SDL_ScaleModeNearest);
+	if(!getenv("NCTV"))SDL_SetTextureScaleMode(st.mc1,SDL_ScaleModeNearest);
 	st.mc2=SDL_CreateTexture(st.ck,SDL_PIXELFORMAT_RGB24,SDL_TEXTUREACCESS_TARGET,st.s1*st.sp1*t2,st.s2*st.sp2*t2);
-	SDL_SetTextureScaleMode(st.mc2,SDL_ScaleModeLinear);
+	if(!getenv("NCTV"))SDL_SetTextureScaleMode(st.mc2,SDL_ScaleModeLinear);
 	st.plg=1;
 }
 #ifdef EMSCRIPTEN
