@@ -30,6 +30,10 @@ struct
 	sp* s;
 	bool plg=1;
 	bool ks=([](){char *d=getenv("KS");return !(!d||d[0]=='0');})();
+	char tks[100]="0";
+	double trk=-1;
+	int ts=0;
+	int tkk=0;
 }st;
 struct nl
 {
@@ -83,7 +87,8 @@ void lk()
 	SDL_LockTexture(st.mc1,NULL,(void**)&st.cn,&st.cns);
 	memset(st.cn,st.ks?255:0,st.s2*st.cns*8);
 	const int ks=5,lsk=5;
-	for(int k=0,b=10;k<ks;k++,b*=10)ns((st.pk%b)*10/b,ks-k,1,1);
+	for(int k=0;st.tks[k]!=0;k++)ns(st.tks[k]-'0',1+k,1,1);
+	if(0)for(int k=0,b=10;k<ks;k++,b*=10)ns((st.pk%b)*10/b,ks-k,1,1);
 	for(int k=0,b=10;(k<lsk&&st.ls*10>=b)||k==0;k++,b*=10)ns((st.ls%b)*10/b,st.s1-2-k,1);
 	if(0)cnk(23,1,2,st.s1-lsk-2,1);
 	for(int k=1;k<st.s1-1;k++)ns(10,k,2);
@@ -128,6 +133,7 @@ void mk()
 		st.s2=st.p2;
 		float d1=((float)x2/(float)(st.s2)*(float)st.sp1/(float)st.sp2);
 		st.s1=ceil((float)x1/d1);
+		SDL_ShowCursor(SDL_DISABLE);
 	}
 	else
 	{
@@ -135,6 +141,7 @@ void mk()
 		st.s1=st.p1;
 		float d2=((float)x1/(float)(st.s1)*(float)st.sp2/(float)st.sp1);
 		st.s2=floor((float)x2/d2);
+		SDL_ShowCursor(SDL_ENABLE);
 	}
 	st.pd.w=x1;
 	st.pd.h=st.s2*((float)x1/(float)(st.s1)*(float)st.sp2/(float)st.sp1);
@@ -157,6 +164,35 @@ void EMSCRIPTEN_KEEPALIVE pp(int x1,int x2)
 }
 }
 #endif
+void dsk(int d)
+{
+	if(d==1)
+	{
+		st.ls++;
+		if(st.ls-st.ds>=st.ps*st.l2)st.ds+=st.l2;
+		st.plg=1;
+	}
+	else if(d==2)
+	{
+		st.ls+=st.l2;
+		if(st.ls-st.ds>=st.ps*st.l2)st.ds+=st.l2;
+		st.plg=1;
+	}
+	else if(d==3)
+	{
+		if(st.ls>0)st.ls--;
+		if(st.ds>st.ls)st.ds-=st.l2;
+		st.plg=1;
+	}
+	else if(d==4)
+	{
+		if(st.ls>=st.l2)st.ls-=st.l2;
+		else {st.ls=0;st.ds=0;}
+		if(st.ds>st.ls)st.ds-=st.l2;
+		if(st.ds<0)st.ds=0;
+		st.plg=1;
+	}
+}
 void nk()
 {
 	SDL_Event g;
@@ -171,31 +207,23 @@ void nk()
 			if(g.key.keysym.sym==SDLK_ESCAPE)
 				st.cs=0;
 			else if(g.key.keysym.sym==SDLK_DOWN)
-			{
-				st.ls++;
-				if(st.ls-st.ds>=st.ps*st.l2)st.ds+=st.l2;
-				st.plg=1;
-			}
+				dsk(1);
 			else if(g.key.keysym.sym==SDLK_RIGHT)
-			{
-				st.ls+=st.l2;
-				if(st.ls-st.ds>=st.ps*st.l2)st.ds+=st.l2;
-				st.plg=1;
-			}
+				dsk(2);
 			else if(g.key.keysym.sym==SDLK_UP)
-			{
-				if(st.ls>0)st.ls--;
-				if(st.ds>st.ls)st.ds-=st.l2;
-				st.plg=1;
-			}
+				dsk(3);
 			else if(g.key.keysym.sym==SDLK_LEFT)
-			{
-				if(st.ls>=st.l2)st.ls-=st.l2;
-				else {st.ls=0;st.ds=0;}
-				if(st.ds>st.ls)st.ds-=st.l2;
-				if(st.ds<0)st.ds=0;
-				st.plg=1;
-			}
+				dsk(4);
+		}
+		auto ss=[](int s1,int s2)->int
+		{
+			int k1=(double)(s1-st.pd.x)/(double)st.pd.w*(double)st.s1;
+			int k2=round((double)(s2-st.pd.y)/(double)st.pd.h*(double)st.s2);
+			return ((k2-st.s2+6)/2)*5+k1/3;
+		};
+		if(g.type==SDL_MOUSEBUTTONDOWN)
+		{
+			printf("%d\n",ss(g.button.x,g.button.y));
 		}
 	}
 	if(st.plg){st.plg=0;lk();}
