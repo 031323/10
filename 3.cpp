@@ -31,9 +31,13 @@ struct
 	bool plg=1;
 	bool ks=([](){char *d=getenv("KS");return !(!d||d[0]=='0');})();
 	char tks[100]="0";
-	double trk=-1;
-	int ts=0;
-	int tkk=0;
+	struct
+	{
+		double k=0;
+		int s=0;
+		int n=0;
+		int p=0;
+	}tr;
 }st;
 struct nl
 {
@@ -122,6 +126,7 @@ void lk()
 }
 void mk()
 {
+	st.tr.p=0;
 	if(st.mc1)SDL_DestroyTexture(st.mc1);
 	if(st.mc2)SDL_DestroyTexture(st.mc2);
 	int x1,x2;
@@ -166,7 +171,7 @@ void EMSCRIPTEN_KEEPALIVE pp(int x1,int x2)
 #endif
 void dsk(int d)
 {
-	if(d==1)
+	if(d==4)
 	{
 		st.ls++;
 		if(st.ls-st.ds>=st.ps*st.l2)st.ds+=st.l2;
@@ -184,7 +189,7 @@ void dsk(int d)
 		if(st.ds>st.ls)st.ds-=st.l2;
 		st.plg=1;
 	}
-	else if(d==4)
+	else if(d==1)
 	{
 		if(st.ls>=st.l2)st.ls-=st.l2;
 		else {st.ls=0;st.ds=0;}
@@ -195,6 +200,7 @@ void dsk(int d)
 }
 void nk()
 {
+	static double k;
 	SDL_Event g;
 	while(SDL_PollEvent(&g))
 	{
@@ -202,28 +208,89 @@ void nk()
 			st.cs=0;
 		if(g.type==SDL_WINDOWEVENT_RESIZED)
 			mk();
+		if(g.type==SDL_WINDOWEVENT_FOCUS_LOST)
+			st.tr.p=0;
+		if(g.type==SDL_KEYUP)
+			if(st.tr.p==1)st.tr.p=0;
 		if(g.type==SDL_KEYDOWN)
 		{
+			int n=0;
 			if(g.key.keysym.sym==SDLK_ESCAPE)
+			{
 				st.cs=0;
+				st.tr.p=0;
+			}
 			else if(g.key.keysym.sym==SDLK_DOWN)
-				dsk(1);
+				n=4;
 			else if(g.key.keysym.sym==SDLK_RIGHT)
-				dsk(2);
+				n=2;
 			else if(g.key.keysym.sym==SDLK_UP)
-				dsk(3);
+				n=3;
 			else if(g.key.keysym.sym==SDLK_LEFT)
-				dsk(4);
+				n=1;
+			else if(g.key.keysym.sym==SDLK_KP_0)
+				n=5;
+			else if(g.key.keysym.sym==SDLK_KP_1)
+				n=6;
+			else if(g.key.keysym.sym==SDLK_KP_2)
+				n=7;
+			else if(g.key.keysym.sym==SDLK_KP_3)
+				n=8;
+			else if(g.key.keysym.sym==SDLK_KP_4)
+				n=9;
+			else if(g.key.keysym.sym==SDLK_KP_5)
+				n=10;
+			else if(g.key.keysym.sym==SDLK_KP_6)
+				n=11;
+			else if(g.key.keysym.sym==SDLK_KP_7)
+				n=12;
+			else if(g.key.keysym.sym==SDLK_KP_8)
+				n=13;
+			else if(g.key.keysym.sym==SDLK_KP_9)
+				n=14;
+			if(st.tr.p==0&&n>0&&n<15)
+			{
+					st.tr.p=1;
+					st.tr.n=n;
+					st.tr.k=0;
+					st.tr.s=0;
+			}
 		}
 		auto ss=[](int s1,int s2)->int
 		{
 			int k1=(double)(s1-st.pd.x)/(double)st.pd.w*(double)st.s1;
 			int k2=round((double)(s2-st.pd.y)/(double)st.pd.h*(double)st.s2);
+			printf("%d %d \n",k1,k2);
 			return ((k2-st.s2+6)/2)*5+k1/3;
 		};
+		if(g.type==SDL_MOUSEBUTTONUP)
+			if(st.tr.p==2)st.tr.p=0;
 		if(g.type==SDL_MOUSEBUTTONDOWN)
+			if(st.tr.p==0)
+			{
+				int n=ss(g.button.x,g.button.y);
+				if(n>0&&n<15)
+				{
+					st.tr.p=2;
+					st.tr.n=n;
+					st.tr.k=0;
+					st.tr.s=0;
+				}
+			}
+		if(g.type==SDL_MOUSEMOTION)
+			if(st.tr.p==2&&ss(g.button.x,g.button.y)!=st.tr.n)
+				st.tr.p=0;
+	}
+	double sk=(double)SDL_GetTicks()/1000.0;
+	st.tr.k+=sk-k;
+	k=sk;
+	if(st.tr.p)
+	{
+		const double dk=.25;
+		if(st.tr.s==0||(st.tr.k-dk)/0.05>st.tr.s-1)
 		{
-			printf("%d\n",ss(g.button.x,g.button.y));
+			st.tr.s++;
+			dsk(st.tr.n);
 		}
 	}
 	if(st.plg){st.plg=0;lk();}
