@@ -38,10 +38,12 @@ struct
 		int n=0;
 		int p=0;
 	}tr;
+	int lsk=5;
 }st;
 struct nl
 {
 	int n=0;
+		sp s=st.s[st.ls];
 	float p1=0,p2=0;
 	bool v=0;
 	unsigned char rm=255,hm=255,nm=255;
@@ -90,7 +92,7 @@ void lk()
 {
 	SDL_LockTexture(st.mc1,NULL,(void**)&st.cn,&st.cns);
 	memset(st.cn,st.ks?255:0,st.s2*st.cns*8);
-	const int ks=5,lsk=5;
+	const int ks=5,lsk=st.lsk;
 	for(int k=0;st.tks[k]!=0;k++)ns(st.tks[k]-'0',1+k,1,1);
 	if(0)for(int k=0,b=10;k<ks;k++,b*=10)ns((st.pk%b)*10/b,ks-k,1,1);
 	for(int k=0,b=10;(k<lsk&&st.ls*10>=b)||k==0;k++,b*=10)ns((st.ls%b)*10/b,st.s1-2-k,1);
@@ -113,7 +115,7 @@ void lk()
 	for(int sk=0;sk<ps*l2;sk++)
 		for(int k=0,b=10;(k<lsk&&st.s[sk+st.ds]*10>=b)||k==0;k++,b*=10)
 			ns((st.s[sk+st.ds]%b)*10/b,p1-2+(lsk+1)*(1+(int)(sk/l2))-k,p2+(sk%l2),0&&(sk+st.ds==st.ls));
-	if(1)nl({.n=16,.p1=(float)(p1-1+(lsk+1)*(1+(int)((st.ls-st.ds)/l2))),.p2=(float)(p2+((st.ls-st.ds)%l2)),
+	if(1)nl({.n=st.tks[0]=='0'?16:st.tks[0]=='1'?26:24,.p1=(float)(p1-1+(lsk+1)*(1+(int)((st.ls-st.ds)/l2))),.p2=(float)(p2+((st.ls-st.ds)%l2)),
 			.rm=255,.hm=255,.nm=255})();
 	SDL_UnlockTexture(st.mc1);
 	SDL_SetRenderTarget(st.ck,st.mc2);
@@ -197,6 +199,38 @@ void dsk(int d)
 		if(st.ds<0)st.ds=0;
 		st.plg=1;
 	}
+	else if(d>4&&d<15)
+	{
+		int p=d-5;
+		if(p==1)
+		{
+			st.tks[0]='1';
+			st.plg=1;
+		}
+	}
+}
+void spk(int d)
+{
+	if(d==3)dsk(3);
+	else if(d==4)dsk(4);
+	else if(d==1)
+	{
+		st.s[st.ls]/=10;
+		st.plg=1;
+	}
+	else if(d==2)
+	{
+		st.tks[0]='0';
+		st.plg=1;
+	}
+	else if(d>4&&d<15)
+	{
+		int p=d-5;
+		int s=st.s[st.ls];
+		static int dg[]={1,10,100,1000,10000,100000};
+		if(s<dg[st.lsk-1])
+			st.s[st.ls]=s*10+p;
+	}
 }
 void nk()
 {
@@ -228,6 +262,28 @@ void nk()
 				n=3;
 			else if(g.key.keysym.sym==SDLK_LEFT)
 				n=1;
+			else if(g.key.keysym.sym==SDLK_BACKSPACE&&st.tks[0]=='1')
+				n=1;
+			else if(g.key.keysym.sym==SDLK_0)
+				n=5;
+			else if(g.key.keysym.sym==SDLK_1)
+				n=6;
+			else if(g.key.keysym.sym==SDLK_2)
+				n=7;
+			else if(g.key.keysym.sym==SDLK_3)
+				n=8;
+			else if(g.key.keysym.sym==SDLK_4)
+				n=9;
+			else if(g.key.keysym.sym==SDLK_5)
+				n=10;
+			else if(g.key.keysym.sym==SDLK_6)
+				n=11;
+			else if(g.key.keysym.sym==SDLK_7)
+				n=12;
+			else if(g.key.keysym.sym==SDLK_8)
+				n=13;
+			else if(g.key.keysym.sym==SDLK_9)
+				n=14;
 			else if(g.key.keysym.sym==SDLK_KP_0)
 				n=5;
 			else if(g.key.keysym.sym==SDLK_KP_1)
@@ -259,9 +315,9 @@ void nk()
 		auto ss=[](int s1,int s2)->int
 		{
 			int k1=(double)(s1-st.pd.x)/(double)st.pd.w*(double)st.s1;
-			int k2=round((double)(s2-st.pd.y)/(double)st.pd.h*(double)st.s2);
+			int k2=round((double)(s2-st.pd.y)/(double)st.pd.h*(double)st.s2)-st.s2+6;
 			printf("%d %d \n",k1,k2);
-			return ((k2-st.s2+6)/2)*5+k1/3;
+			return k2<0?-1:(k2/2)*5+k1/3;
 		};
 		if(g.type==SDL_MOUSEBUTTONUP)
 			if(st.tr.p==2)st.tr.p=0;
@@ -290,7 +346,12 @@ void nk()
 		if(st.tr.s==0||(st.tr.k-dk)/0.05>st.tr.s-1)
 		{
 			st.tr.s++;
-			dsk(st.tr.n);
+			if(st.tks[0]=='0')dsk(st.tr.n);
+			else if(st.tks[0]=='1')
+			{
+				spk(st.tr.n);
+				st.plg=1;
+			}
 		}
 	}
 	if(st.plg){st.plg=0;lk();}
