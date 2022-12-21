@@ -6,7 +6,7 @@ bool jt=0;
 #include"nc.xbm"
 #include<limits.h>
 const int cls=nc_width;
-typedef uint32_t sp;
+typedef uint8_t sp;
 const size_t pd=1000;
 sp ps[10][pd]=
 {
@@ -30,7 +30,7 @@ struct
 	size_t pk=0;
 	size_t ls=1;
 	size_t ds=0;
-	const size_t sk=10000;
+	const size_t sk=256;
 	sp* s;
 	bool plg=1;
 	bool ks=([](){char *d=getenv("KS");return !(!d||d[0]=='0');})();
@@ -216,7 +216,7 @@ void dsk(int d)
 	else if(d==2)
 	{
 		st.ls+=st.l2;
-		if(st.ls>st.sk)st.ls=st.sk-1;
+		if(st.ls>st.sk)st.ls=st.sk;
 		if(st.ls-st.ds>(size_t)(st.ps*st.l2))st.ds+=st.l2;
 	}
 	else if(d==3)
