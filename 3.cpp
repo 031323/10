@@ -39,6 +39,7 @@ struct
 		int p=0;
 	}tr;
 	int lsk=5;
+	int g=1;
 }st;
 struct nl
 {
@@ -206,6 +207,15 @@ void dsk(int d)
 		{
 			st.tks[0]='1';
 			st.plg=1;
+			st.tr.p+=2;
+		}
+		else if(p==2)
+		{
+			st.tks[0]='2';
+			st.plg=1;
+			st.s[0]=0;
+			st.s[1]=3;
+			st.tr.p+=2;
 		}
 	}
 }
@@ -222,6 +232,7 @@ void spk(int d)
 	{
 		st.tks[0]='0';
 		st.plg=1;
+		st.tr.p+=2;
 	}
 	else if(d>4&&d<15)
 	{
@@ -238,23 +249,18 @@ void nk()
 	SDL_Event g;
 	while(SDL_PollEvent(&g))
 	{
-		if(g.type==SDL_QUIT)
-			st.cs=0;
-		if(g.type==SDL_WINDOWEVENT_RESIZED)
-			mk();
-		if(g.type==SDL_WINDOWEVENT_FOCUS_LOST)
-			st.tr.p=0;
-		if(g.type==SDL_KEYUP)
-			if(st.tr.p==1)st.tr.p=0;
-		if(g.type==SDL_KEYDOWN)
+		SDL_GetKeyboardState(0);
+		auto ss=[](int s1,int s2)->int
+		{
+			int k1=(double)(s1-st.pd.x)/(double)st.pd.w*(double)st.s1;
+			int k2=round((double)(s2-st.pd.y)/(double)st.pd.h*(double)st.s2)-st.s2+6;
+			printf("%d %d \n",k1,k2);
+			return k2<0?-1:(k2/2)*5+k1/3;
+		};
+		auto ts=[&g]()
 		{
 			int n=0;
-			if(g.key.keysym.sym==SDLK_ESCAPE)
-			{
-				st.cs=0;
-				st.tr.p=0;
-			}
-			else if(g.key.keysym.sym==SDLK_DOWN)
+			if(g.key.keysym.sym==SDLK_DOWN)
 				n=4;
 			else if(g.key.keysym.sym==SDLK_RIGHT)
 				n=2;
@@ -304,21 +310,34 @@ void nk()
 				n=13;
 			else if(g.key.keysym.sym==SDLK_KP_9)
 				n=14;
-			if(st.tr.p==0&&n>0&&n<15)
+			return n;
+		};
+		if(g.type==SDL_QUIT)
+			st.cs=0;
+		else if(g.type==SDL_WINDOWEVENT_RESIZED)
+			mk();
+		else if(g.type==SDL_WINDOWEVENT_FOCUS_LOST)
+			st.tr.p=0;
+		else if(g.type==SDL_KEYUP)
+		{
+			if((st.tr.p==1||st.tr.p==3)&&ts()==st.tr.n)st.tr.p=0;
+		}
+		else if(g.type==SDL_KEYDOWN)
+		{
+			int n=ts();
+			if(g.key.keysym.sym==SDLK_ESCAPE)
 			{
-					st.tr.p=1;
-					st.tr.n=n;
-					st.tr.k=0;
-					st.tr.s=0;
+				st.cs=0;
+				st.tr.p=0;
+			}
+			if((st.tr.p==0||(st.tr.p==1&&n!=st.tr.n))&&n>0&&n<15)
+			{
+				st.tr.p=1;
+				st.tr.n=n;
+				st.tr.k=0;
+				st.tr.s=0;
 			}
 		}
-		auto ss=[](int s1,int s2)->int
-		{
-			int k1=(double)(s1-st.pd.x)/(double)st.pd.w*(double)st.s1;
-			int k2=round((double)(s2-st.pd.y)/(double)st.pd.h*(double)st.s2)-st.s2+6;
-			printf("%d %d \n",k1,k2);
-			return k2<0?-1:(k2/2)*5+k1/3;
-		};
 		if(g.type==SDL_MOUSEBUTTONUP)
 			if(st.tr.p==2)st.tr.p=0;
 		if(g.type==SDL_MOUSEBUTTONDOWN)
@@ -340,7 +359,7 @@ void nk()
 	double sk=(double)SDL_GetTicks()/1000.0;
 	st.tr.k+=sk-k;
 	k=sk;
-	if(st.tr.p)
+	if(st.tr.p==1||st.tr.p==2)
 	{
 		const double dk=.25;
 		if(st.tr.s==0||(st.tr.k-dk)/0.05>st.tr.s-1)
@@ -354,6 +373,7 @@ void nk()
 			}
 		}
 	}
+	if(st.tr.p==4)st.tr.p=0;
 	if(st.plg){st.plg=0;lk();}
 }
 int main()
