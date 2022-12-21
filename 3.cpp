@@ -6,11 +6,12 @@ bool jt=0;
 #include"nc.xbm"
 #include<limits.h>
 const int cls=nc_width;
-typedef uint8_t sp;
+typedef uint32_t sp;
 const size_t pd=1000;
 sp ps[10][pd]=
 {
-	{0,0,3,100},
+	{0,
+		0,0,4,100},
 };
 struct
 {
@@ -30,7 +31,7 @@ struct
 	size_t pk=0;
 	size_t ls=1;
 	size_t ds=0;
-	const size_t sk=256;
+	const size_t sk=64;
 	sp* s;
 	bool plg=1;
 	bool ks=([](){char *d=getenv("KS");return !(!d||d[0]=='0');})();
@@ -267,7 +268,7 @@ void spk(int d)
 		sp s=sts(st.ls);
 		static size_t dg[]={1,10,100,1000,10000,100000};
 		size_t nn=s*10+p;
-		if(s<dg[st.lsk-1]&&nn<=st.sk)
+		if(nn<dg[st.lsk]&&(nn<=st.sk||st.ls!=3))
 			sts(st.ls)=nn;
 		st.tr.p=0;
 	}
