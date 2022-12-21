@@ -6,11 +6,11 @@ bool jt=0;
 #include"nc.xbm"
 #include<limits.h>
 const int cls=nc_width;
-typedef uint16_t sp;
+typedef uint32_t sp;
 const size_t pd=1000;
 sp ps[10][pd]=
 {
-	{0,0,3},
+	{0,0,3,100},
 };
 struct
 {
@@ -30,7 +30,7 @@ struct
 	size_t pk=0;
 	size_t ls=0;
 	size_t ds=0;
-	const size_t sk=64*1024;
+	const size_t sk=10000;
 	sp* s;
 	bool plg=1;
 	bool ks=([](){char *d=getenv("KS");return !(!d||d[0]=='0');})();
@@ -99,7 +99,7 @@ void lk()
 	const int ks=5,lsk=st.lsk;
 	for(int k=0;st.tks[k]!=0;k++)ns(st.tks[k]-'0',1+k,1,1);
 	if(0)for(int k=0,b=10;k<ks;k++,b*=10)ns((st.pk%b)*10/b,ks-k,1,1);
-	sp pn=st.ls;
+	size_t pn=st.ls+1;
 	for(int k=0;(k<lsk&&pn>0)||k==0;k++,pn/=10)ns(pn%10,st.s1-2-k,1);
 	if(0)cnk(23,1,2,st.s1-lsk-2,1);
 	for(int k=1;k<st.s1-1;k++)ns(10,k,2);
@@ -201,25 +201,25 @@ bool yk()
 }
 void dsk(int d)
 {
+	auto cs=[](){return st.ls>st.s[2]-1&&st.ls<st.s[3]-1;};
 	if(d==4)
 	{
 		st.ls++;
 		if(st.ls>=st.sk)st.ls--;
 		if(st.ls-st.ds>=(size_t)(st.ps*st.l2))st.ds+=st.l2;
-		st.plg=1;
+		if(!cs())st.tks[0]='0';
 	}
 	else if(d==2)
 	{
 		st.ls+=st.l2;
 		if(st.ls>=st.sk)st.ls=st.sk-1;
 		if(st.ls-st.ds>=(size_t)(st.ps*st.l2))st.ds+=st.l2;
-		st.plg=1;
 	}
 	else if(d==3)
 	{
 		if(st.ls>0)st.ls--;
 		if(st.ds>st.ls)st.ds-=st.l2;
-		st.plg=1;
+		if(!cs())st.tks[0]='0';
 	}
 	else if(d==1)
 	{
@@ -227,21 +227,18 @@ void dsk(int d)
 		else {st.ls=0;st.ds=0;}
 		if(st.ds>st.ls)st.ds-=st.l2;
 		if(st.ds<0)st.ds=0;
-		st.plg=1;
 	}
 	else if(d>4&&d<15)
 	{
 		int p=d-5;
-		if(p==1)
+		if(p==1&&cs())
 		{
 			st.tks[0]='1';
-			st.plg=1;
 			st.tr.p=0;
 		}
 		else if(p==2)
 		{
 			st.tks[0]='2';
-			st.plg=1;
 			st.tr.p=0;
 			st.g=1;
 		}
@@ -254,12 +251,10 @@ void spk(int d)
 	else if(d==1)
 	{
 		st.s[st.ls]/=10;
-		st.plg=1;
 	}
 	else if(d==2)
 	{
 		st.tks[0]='0';
-		st.plg=1;
 		st.tr.p=0;
 	}
 	else if(d>4&&d<15)
@@ -268,10 +263,10 @@ void spk(int d)
 		sp s=st.s[st.ls];
 		static size_t dg[]={1,10,100,1000,10000,100000};
 		size_t nn=s*10+p;
-		if(s<dg[st.lsk-1]&&nn<st.sk)
+		if(s<dg[st.lsk-1]&&nn<=st.sk)
 			st.s[st.ls]=nn;
+		st.tr.p=0;
 	}
-	st.tr.p=0;
 }
 void nk()
 {
@@ -400,6 +395,7 @@ void nk()
 	double sk=(double)SDL_GetTicks()/1000.0;
 	if(st.tks[0]=='2')
 	{
+		st.plg=1;
 		for(unsigned long k=0;k<st.g;k++)
 			if(!yk())
 			{
@@ -407,7 +403,6 @@ void nk()
 				st.tks[0]='0';
 				break;	
 			}
-		st.plg=1;
 		double pk=(double)SDL_GetTicks()/1000.0;
 		if(pk-sk<0.006)st.g*=2;
 		else if(st.g>1)st.g/=2;
@@ -417,6 +412,7 @@ void nk()
 	if(st.tr.p==1||st.tr.p==2)
 	{
 		const double dk=.25;
+		st.plg=1;
 		if(st.tr.s==0||(st.tr.k-dk)/0.05>st.tr.s-1)
 		{
 			st.tr.s++;
@@ -424,7 +420,6 @@ void nk()
 			else if(st.tks[0]=='1')
 			{
 				spk(st.tr.n);
-				st.plg=1;
 			}
 			else if(st.tks[0]=='2'&&st.tr.n==5+3)
 				st.s[1]=st.s[2];
