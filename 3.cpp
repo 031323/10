@@ -7,7 +7,10 @@ bool jt=0;
 const int cls=nc_width;
 typedef uint16_t sp;
 const int pd=1000;
-sp ps[10][pd]={};
+sp ps[10][pd]=
+{
+	{0,0,3},
+};
 struct
 {
 	SDL_Window* cp;
@@ -347,7 +350,7 @@ void nk()
 				st.cs=0;
 				st.tr.p=0;
 			}
-			if((st.tr.p==0||(st.tr.p==1&&n!=st.tr.n))&&n>0&&n<15)
+			if((st.tr.p==0||((st.tr.p==1||st.tr.p==3)&&n!=st.tr.n))&&n>0&&n<15)
 			{
 				st.tr.p=1;
 				st.tr.n=n;
@@ -402,6 +405,8 @@ void nk()
 				spk(st.tr.n);
 				st.plg=1;
 			}
+			else if(st.tks[0]=='2'&&st.tr.n==5+3)
+				st.s[1]=st.s[2];
 		}
 	}
 	if(st.tr.p==4)st.tr.p=0;
@@ -429,9 +434,6 @@ int main()
 	}
 	st.s=new sp[st.sk];
 	srand(100);
-	for(int k=0;k<pd;k++)
-		ps[0][k]=rand()%100;
-	ps[0][2]=57438;
 	pss(1);
 	ydk();
 	mk();
