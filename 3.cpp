@@ -28,7 +28,7 @@ struct
 	SDL_RendererInfo j;
 	bool tp=0;
 	size_t pk=0;
-	size_t ls=0;
+	size_t ls=1;
 	size_t ds=0;
 	const size_t sk=10000;
 	sp* s;
@@ -45,6 +45,10 @@ struct
 	int lsk=5;
 	unsigned long int g=1;
 }st;
+sp& sts(size_t k)
+{
+	return k==st.sk?st.s[0]:st.s[k];
+}
 struct nl
 {
 	int n=0;
@@ -99,7 +103,7 @@ void lk()
 	const int ks=5,lsk=st.lsk;
 	for(int k=0;st.tks[k]!=0;k++)ns(st.tks[k]-'0',1+k,1,1);
 	if(0)for(int k=0,b=10;k<ks;k++,b*=10)ns((st.pk%b)*10/b,ks-k,1,1);
-	size_t pn=st.ls+1;
+	size_t pn=st.ls;
 	for(int k=0;(k<lsk&&pn>0)||k==0;k++,pn/=10)ns(pn%10,st.s1-2-k,1);
 	if(0)cnk(23,1,2,st.s1-lsk-2,1);
 	for(int k=1;k<st.s1-1;k++)ns(10,k,2);
@@ -116,14 +120,14 @@ void lk()
 	int ps=l1/(lsk+1);
 	st.ps=ps;
 	if(st.ds%st.l2)st.ds=(st.ds/st.l2)*st.l2;
-	while(st.ls-st.ds>=(size_t)ps*l2)st.ds+=st.l2;
+	while(st.ls-st.ds>(size_t)ps*l2)st.ds+=st.l2;
 	for(int sk=0;sk<ps*l2;sk++)
 	{
 		if(st.ds+sk>=st.sk)
 			break;
-		sp pn=st.s[st.ds+sk];
+		sp pn=sts(1+st.ds+sk);
 		for(int k=0;(k<lsk&&pn>0)||k==0;k++,pn/=10)
-			ns(pn%10,p1-2+(lsk+1)*(1+(int)(sk/l2))-k,p2+(sk%l2),0&&(sk+st.ds==st.ls));
+			ns(pn%10,p1-2+(lsk+1)*(1+(int)(sk/l2))-k,p2+(sk%l2),0);
 	}
 	if(1)nl({.n=st.tks[0]=='0'?16:st.tks[0]=='1'?26:24,.p1=(float)(p1-1+(lsk+1)*(1+(int)((st.ls-st.ds)/l2))),.p2=(float)(p2+((st.ls-st.ds)%l2)),
 			.rm=255,.hm=255,.nm=255})();
@@ -183,25 +187,25 @@ void EMSCRIPTEN_KEEPALIVE pp(int x1,int x2)
 #endif
 void ydk()
 {
-	st.s[0]=0;
-	st.s[1]=3;
+	sts(1)=0;
+	sts(2)=3;
 }
 bool yk()
 {
-	if(st.s[1]>=st.s[2])
+	if(sts(2)>=sts(3))
 	{
 		ydk();
 		return 0;
 	}
 	else
 	{
-		st.s[1]++;
+		sts(1)++;
 		return 1;
 	}
 }
 void dsk(int d)
 {
-	auto cs=[](){return st.ls>st.s[2]-1&&st.ls<st.s[3]-1;};
+	auto cs=[](){return st.ls>sts(3)&&st.ls<sts(4);};
 	if(d==4)
 	{
 		st.ls++;
@@ -250,7 +254,7 @@ void spk(int d)
 	else if(d==4)dsk(4);
 	else if(d==1)
 	{
-		st.s[st.ls]/=10;
+		sts(st.ls)/=10;
 	}
 	else if(d==2)
 	{
@@ -260,11 +264,11 @@ void spk(int d)
 	else if(d>4&&d<15)
 	{
 		int p=d-5;
-		sp s=st.s[st.ls];
+		sp s=sts(st.ls);
 		static size_t dg[]={1,10,100,1000,10000,100000};
 		size_t nn=s*10+p;
 		if(s<dg[st.lsk-1]&&nn<=st.sk)
-			st.s[st.ls]=nn;
+			sts(st.ls)=nn;
 		st.tr.p=0;
 	}
 }
@@ -422,7 +426,7 @@ void nk()
 				spk(st.tr.n);
 			}
 			else if(st.tks[0]=='2'&&st.tr.n==5+3)
-				st.s[1]=st.s[2];
+				sts(1)=sts(2);
 		}
 	}
 	if(st.plg){st.plg=0;lk();}
