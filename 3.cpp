@@ -39,7 +39,7 @@ struct
 		int p=0;
 	}tr;
 	int lsk=5;
-	int g=1;
+	unsigned long int g=1;
 }st;
 struct nl
 {
@@ -172,6 +172,24 @@ void EMSCRIPTEN_KEEPALIVE pp(int x1,int x2)
 }
 }
 #endif
+void ydk()
+{
+	st.s[0]=0;
+	st.s[1]=3;
+}
+bool yk()
+{
+	if(st.s[1]==st.s[2])
+	{
+		ydk();
+		return 0;
+	}
+	else
+	{
+		st.s[1]++;
+		return 1;
+	}
+}
 void dsk(int d)
 {
 	if(d==4)
@@ -213,9 +231,8 @@ void dsk(int d)
 		{
 			st.tks[0]='2';
 			st.plg=1;
-			st.s[0]=0;
-			st.s[1]=3;
 			st.tr.p+=2;
+			st.g=1;
 		}
 	}
 }
@@ -239,7 +256,7 @@ void spk(int d)
 		int p=d-5;
 		int s=st.s[st.ls];
 		static int dg[]={1,10,100,1000,10000,100000};
-		if(s<dg[st.lsk-1])
+		if(s<dg[st.lsk-2])
 			st.s[st.ls]=s*10+p;
 	}
 }
@@ -357,6 +374,20 @@ void nk()
 				st.tr.p=0;
 	}
 	double sk=(double)SDL_GetTicks()/1000.0;
+	if(st.tks[0]=='2')
+	{
+		for(unsigned long k=0;k<st.g;k++)
+			if(!yk())
+			{
+				if(st.tr.p==1||st.tr.p==2)st.tr.p+=2;
+				st.tks[0]='0';
+				break;	
+			}
+		st.plg=1;
+		double pk=(double)SDL_GetTicks()/1000.0;
+		if(pk-sk<0.006)st.g*=2;
+		else if(st.g>1)st.g/=2;
+	}
 	st.tr.k+=sk-k;
 	k=sk;
 	if(st.tr.p==1||st.tr.p==2)
@@ -400,7 +431,9 @@ int main()
 	srand(100);
 	for(int k=0;k<pd;k++)
 		ps[0][k]=rand()%100;
+	ps[0][2]=57438;
 	pss(1);
+	ydk();
 	mk();
 #ifndef EMSCRIPTEN
 	while(st.cs)
