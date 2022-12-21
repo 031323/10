@@ -228,13 +228,13 @@ void dsk(int d)
 		{
 			st.tks[0]='1';
 			st.plg=1;
-			st.tr.p+=2;
+			st.tr.p=0;
 		}
 		else if(p==2)
 		{
 			st.tks[0]='2';
 			st.plg=1;
-			st.tr.p+=2;
+			st.tr.p=0;
 			st.g=1;
 		}
 	}
@@ -252,7 +252,7 @@ void spk(int d)
 	{
 		st.tks[0]='0';
 		st.plg=1;
-		st.tr.p+=2;
+		st.tr.p=0;
 	}
 	else if(d>4&&d<15)
 	{
@@ -262,14 +262,17 @@ void spk(int d)
 		if(s<dg[st.lsk-2])
 			st.s[st.ls]=s*10+p;
 	}
+	st.tr.p=0;
 }
 void nk()
 {
 	static double k;
 	SDL_Event g;
+	const int tpss=25;
+	static char tps[tpss];
+	auto tpm=[](){memset(tps,0,tpss);};
 	while(SDL_PollEvent(&g))
 	{
-		SDL_GetKeyboardState(0);
 		auto ss=[](int s1,int s2)->int
 		{
 			int k1=(double)(s1-st.pd.x)/(double)st.pd.w*(double)st.s1;
@@ -311,25 +314,25 @@ void nk()
 			else if(g.key.keysym.sym==SDLK_9)
 				n=14;
 			else if(g.key.keysym.sym==SDLK_KP_0)
-				n=5;
+				n=15;
 			else if(g.key.keysym.sym==SDLK_KP_1)
-				n=6;
+				n=16;
 			else if(g.key.keysym.sym==SDLK_KP_2)
-				n=7;
+				n=17;
 			else if(g.key.keysym.sym==SDLK_KP_3)
-				n=8;
+				n=18;
 			else if(g.key.keysym.sym==SDLK_KP_4)
-				n=9;
+				n=19;
 			else if(g.key.keysym.sym==SDLK_KP_5)
-				n=10;
+				n=20;
 			else if(g.key.keysym.sym==SDLK_KP_6)
-				n=11;
+				n=21;
 			else if(g.key.keysym.sym==SDLK_KP_7)
-				n=12;
+				n=22;
 			else if(g.key.keysym.sym==SDLK_KP_8)
-				n=13;
+				n=23;
 			else if(g.key.keysym.sym==SDLK_KP_9)
-				n=14;
+				n=24;
 			return n;
 		};
 		if(g.type==SDL_QUIT)
@@ -337,25 +340,34 @@ void nk()
 		else if(g.type==SDL_WINDOWEVENT_RESIZED)
 			mk();
 		else if(g.type==SDL_WINDOWEVENT_FOCUS_LOST)
+		{
+			tpm();
 			st.tr.p=0;
+		}
 		else if(g.type==SDL_KEYUP)
 		{
-			if((st.tr.p==1||st.tr.p==3)&&ts()==st.tr.n)st.tr.p=0;
+			if((st.tr.p==1)&&ts()==st.tr.n)st.tr.p=0;
+			tps[ts()]=0;
 		}
 		else if(g.type==SDL_KEYDOWN)
 		{
-			int n=ts();
 			if(g.key.keysym.sym==SDLK_ESCAPE)
 			{
 				st.cs=0;
 				st.tr.p=0;
 			}
-			if((st.tr.p==0||((st.tr.p==1||st.tr.p==3)&&n!=st.tr.n))&&n>0&&n<15)
+			int n=ts();
+			if(tps[n]==0)
 			{
-				st.tr.p=1;
-				st.tr.n=n;
-				st.tr.k=0;
-				st.tr.s=0;
+				tps[n]=1;
+				if(n>14)n-=10;
+				if(n>0&&n<15)
+				{
+					st.tr.p=1;
+					st.tr.n=n;
+					st.tr.k=0;
+					st.tr.s=0;
+				}
 			}
 		}
 		if(g.type==SDL_MOUSEBUTTONUP)
@@ -382,7 +394,7 @@ void nk()
 		for(unsigned long k=0;k<st.g;k++)
 			if(!yk())
 			{
-				if(st.tr.p==1||st.tr.p==2)st.tr.p+=2;
+				st.tr.p=0;
 				st.tks[0]='0';
 				break;	
 			}
@@ -409,7 +421,6 @@ void nk()
 				st.s[1]=st.s[2];
 		}
 	}
-	if(st.tr.p==4)st.tr.p=0;
 	if(st.plg){st.plg=0;lk();}
 }
 int main()
