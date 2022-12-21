@@ -209,27 +209,27 @@ void dsk(int d)
 	if(d==4)
 	{
 		st.ls++;
-		if(st.ls>=st.sk)st.ls--;
-		if(st.ls-st.ds>=(size_t)(st.ps*st.l2))st.ds+=st.l2;
+		if(st.ls>st.sk)st.ls--;
+		if(st.ls-st.ds>(size_t)(st.ps*st.l2))st.ds+=st.l2;
 		if(!cs())st.tks[0]='0';
 	}
 	else if(d==2)
 	{
 		st.ls+=st.l2;
-		if(st.ls>=st.sk)st.ls=st.sk-1;
-		if(st.ls-st.ds>=(size_t)(st.ps*st.l2))st.ds+=st.l2;
+		if(st.ls>st.sk)st.ls=st.sk-1;
+		if(st.ls-st.ds>(size_t)(st.ps*st.l2))st.ds+=st.l2;
 	}
 	else if(d==3)
 	{
-		if(st.ls>0)st.ls--;
-		if(st.ds>st.ls)st.ds-=st.l2;
+		if(st.ls>1)st.ls--;
+		if(st.ds>=st.ls)st.ds-=st.l2;
 		if(!cs())st.tks[0]='0';
 	}
 	else if(d==1)
 	{
-		if(st.ls>=(size_t)st.l2)st.ls-=st.l2;
-		else {st.ls=0;st.ds=0;}
-		if(st.ds>st.ls)st.ds-=st.l2;
+		if(st.ls>(size_t)st.l2)st.ls-=st.l2;
+		else {st.ls=1;st.ds=0;}
+		if(st.ds>=st.ls)st.ds-=st.l2;
 		if(st.ds<0)st.ds=0;
 	}
 	else if(d>4&&d<15)
