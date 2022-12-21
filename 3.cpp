@@ -4,9 +4,10 @@ bool jt=0;
 #include<emscripten.h>
 #endif
 #include"nc.xbm"
+#include<limits.h>
 const int cls=nc_width;
 typedef uint16_t sp;
-const int pd=1000;
+const size_t pd=1000;
 sp ps[10][pd]=
 {
 	{0,0,3},
@@ -26,10 +27,10 @@ struct
 	int cns;
 	SDL_RendererInfo j;
 	bool tp=0;
-	int pk=0;
-	int ls=0;
-	int ds=0;
-	const int sk=64*1024;
+	size_t pk=0;
+	size_t ls=0;
+	size_t ds=0;
+	const size_t sk=64*1024;
 	sp* s;
 	bool plg=1;
 	bool ks=([](){char *d=getenv("KS");return !(!d||d[0]=='0');})();
@@ -47,7 +48,6 @@ struct
 struct nl
 {
 	int n=0;
-		sp s=st.s[st.ls];
 	float p1=0,p2=0;
 	bool v=0;
 	unsigned char rm=255,hm=255,nm=255;
@@ -85,11 +85,11 @@ void cnk(int k,int m1,int m2,float p1,float p2)
 			ns(k+x2*(cls/st.sp1)+x1,p1+x1,p2+x2);
 		}
 }
-void pss(int pk)
+void pss(size_t pk)
 {
 	st.pk=pk;
 	memset(st.s,0,sizeof(sp)*st.sk);
-	for(size_t k=0;k<pd;k++)
+	for(size_t k=0;k<pd&&k<(size_t)st.sk;k++)
 		st.s[k]=ps[pk-1][k];
 }
 void lk()
@@ -99,7 +99,8 @@ void lk()
 	const int ks=5,lsk=st.lsk;
 	for(int k=0;st.tks[k]!=0;k++)ns(st.tks[k]-'0',1+k,1,1);
 	if(0)for(int k=0,b=10;k<ks;k++,b*=10)ns((st.pk%b)*10/b,ks-k,1,1);
-	for(int k=0,b=10;(k<lsk&&st.ls*10>=b)||k==0;k++,b*=10)ns((st.ls%b)*10/b,st.s1-2-k,1);
+	sp pn=st.ls;
+	for(int k=0;(k<lsk&&pn>0)||k==0;k++,pn/=10)ns(pn%10,st.s1-2-k,1);
 	if(0)cnk(23,1,2,st.s1-lsk-2,1);
 	for(int k=1;k<st.s1-1;k++)ns(10,k,2);
 	int l1=st.s1-2,l2=st.s2-4;
@@ -115,10 +116,15 @@ void lk()
 	int ps=l1/(lsk+1);
 	st.ps=ps;
 	if(st.ds%st.l2)st.ds=(st.ds/st.l2)*st.l2;
-	while(st.ls-st.ds>=ps*l2)st.ds+=st.l2;
+	while(st.ls-st.ds>=(size_t)ps*l2)st.ds+=st.l2;
 	for(int sk=0;sk<ps*l2;sk++)
-		for(int k=0,b=10;(k<lsk&&st.s[sk+st.ds]*10>=b)||k==0;k++,b*=10)
-			ns((st.s[sk+st.ds]%b)*10/b,p1-2+(lsk+1)*(1+(int)(sk/l2))-k,p2+(sk%l2),0&&(sk+st.ds==st.ls));
+	{
+		if(st.ds+sk>=st.sk)
+			break;
+		sp pn=st.s[st.ds+sk];
+		for(int k=0;(k<lsk&&pn>0)||k==0;k++,pn/=10)
+			ns(pn%10,p1-2+(lsk+1)*(1+(int)(sk/l2))-k,p2+(sk%l2),0&&(sk+st.ds==st.ls));
+	}
 	if(1)nl({.n=st.tks[0]=='0'?16:st.tks[0]=='1'?26:24,.p1=(float)(p1-1+(lsk+1)*(1+(int)((st.ls-st.ds)/l2))),.p2=(float)(p2+((st.ls-st.ds)%l2)),
 			.rm=255,.hm=255,.nm=255})();
 	SDL_UnlockTexture(st.mc1);
@@ -182,7 +188,7 @@ void ydk()
 }
 bool yk()
 {
-	if(st.s[1]==st.s[2])
+	if(st.s[1]>=st.s[2])
 	{
 		ydk();
 		return 0;
@@ -198,13 +204,15 @@ void dsk(int d)
 	if(d==4)
 	{
 		st.ls++;
-		if(st.ls-st.ds>=st.ps*st.l2)st.ds+=st.l2;
+		if(st.ls>=st.sk)st.ls--;
+		if(st.ls-st.ds>=(size_t)(st.ps*st.l2))st.ds+=st.l2;
 		st.plg=1;
 	}
 	else if(d==2)
 	{
 		st.ls+=st.l2;
-		if(st.ls-st.ds>=st.ps*st.l2)st.ds+=st.l2;
+		if(st.ls>=st.sk)st.ls=st.sk-1;
+		if(st.ls-st.ds>=(size_t)(st.ps*st.l2))st.ds+=st.l2;
 		st.plg=1;
 	}
 	else if(d==3)
@@ -215,7 +223,7 @@ void dsk(int d)
 	}
 	else if(d==1)
 	{
-		if(st.ls>=st.l2)st.ls-=st.l2;
+		if(st.ls>=(size_t)st.l2)st.ls-=st.l2;
 		else {st.ls=0;st.ds=0;}
 		if(st.ds>st.ls)st.ds-=st.l2;
 		if(st.ds<0)st.ds=0;
@@ -257,10 +265,11 @@ void spk(int d)
 	else if(d>4&&d<15)
 	{
 		int p=d-5;
-		int s=st.s[st.ls];
-		static int dg[]={1,10,100,1000,10000,100000};
-		if(s<dg[st.lsk-2])
-			st.s[st.ls]=s*10+p;
+		sp s=st.s[st.ls];
+		static size_t dg[]={1,10,100,1000,10000,100000};
+		size_t nn=s*10+p;
+		if(s<dg[st.lsk-1]&&nn<st.sk)
+			st.s[st.ls]=nn;
 	}
 	st.tr.p=0;
 }
