@@ -129,7 +129,7 @@ void lk()
 		for(int k=0;(k<lsk&&pn>0)||k==0;k++,pn/=10)
 			ns(pn%10,p1-2+(lsk+1)*(1+(int)(sk/l2))-k,p2+(sk%l2),0);
 	}
-	if(1)nl({.n=st.tks[0]=='0'?16:st.tks[0]=='1'?26:24,.p1=(float)(p1-1+(lsk+1)*(1+(int)((st.ls-st.ds)/l2))),.p2=(float)(p2+((st.ls-st.ds)%l2)),
+	if(1)nl({.n=st.tks[0]=='0'?16:st.tks[0]=='1'?26:24,.p1=(float)(p1-1+(lsk+1)*(1+(int)((st.ls-1-st.ds)/l2))),.p2=(float)(p2+((st.ls-1-st.ds)%l2)),
 			.rm=255,.hm=255,.nm=255})();
 	SDL_UnlockTexture(st.mc1);
 	SDL_SetRenderTarget(st.ck,st.mc2);
