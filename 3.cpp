@@ -11,7 +11,7 @@ const size_t pd=1000;
 sp ps[10][pd]=
 {
 	{0,
-		0,0,4,100},
+		0,0,4,0,1000},
 };
 struct
 {
@@ -31,7 +31,7 @@ struct
 	size_t pk=0;
 	size_t ls=1;
 	size_t ds=0;
-	const size_t sk=64;
+	const size_t sk=100000;
 	sp* s;
 	bool plg=1;
 	bool ks=([](){char *d=getenv("KS");return !(!d||d[0]=='0');})();
@@ -189,7 +189,7 @@ void EMSCRIPTEN_KEEPALIVE pp(int x1,int x2)
 void ydk()
 {
 	sts(1)=0;
-	sts(2)=3;
+	sts(2)=6;
 }
 bool yk()
 {
@@ -200,13 +200,13 @@ bool yk()
 	}
 	else
 	{
-		sts(1)++;
+		sts(2)++;
 		return 1;
 	}
 }
 void dsk(int d)
 {
-	auto cs=[](){return st.ls>sts(3)&&st.ls<sts(4);};
+	auto cs=[](){return st.ls>sts(4)&&st.ls<sts(5);};
 	if(d==4)
 	{
 		st.ls++;
@@ -268,7 +268,7 @@ void spk(int d)
 		sp s=sts(st.ls);
 		static size_t dg[]={1,10,100,1000,10000,100000};
 		size_t nn=s*10+p;
-		if(nn<dg[st.lsk]&&(nn<=st.sk||st.ls!=3))
+		if(nn<dg[st.lsk]&&(nn<=st.sk))
 			sts(st.ls)=nn;
 		st.tr.p=0;
 	}
@@ -427,7 +427,7 @@ void nk()
 				spk(st.tr.n);
 			}
 			else if(st.tks[0]=='2'&&st.tr.n==5+3)
-				sts(1)=sts(2);
+				sts(2)=sts(3);
 		}
 	}
 	if(st.plg){st.plg=0;lk();}
