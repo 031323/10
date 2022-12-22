@@ -300,8 +300,6 @@ void nk()
 				n=3;
 			else if(g.key.keysym.sym==SDLK_LEFT)
 				n=1;
-			else if(g.key.keysym.sym==SDLK_BACKSPACE&&st.tks[0]=='1')
-				n=1;
 			else if(g.key.keysym.sym==SDLK_0)
 				n=5;
 			else if(g.key.keysym.sym==SDLK_1)
