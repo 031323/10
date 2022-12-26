@@ -330,6 +330,12 @@ void dsk(int d)
 			st.tr.p=0;
 			st.g=1;
 		}
+		else if(p==3&&sts(1)==1)
+		{
+			pss(st.pk+1);
+			ydk();	
+			st.tr.p=0;
+		}
 	}
 }
 void spk(int d)
