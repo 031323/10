@@ -188,19 +188,102 @@ void EMSCRIPTEN_KEEPALIVE pp(int x1,int x2)
 #endif
 void ydk()
 {
-	sts(1)=0;
 	sts(2)=6;
 }
 bool yk()
 {
-	if(sts(2)>=sts(3))
+	sp& s=sts(2);
+	if(s>=sts(3))
 	{
 		ydk();
 		return 0;
 	}
 	else
 	{
-		sts(2)++;
+		sp d=sts(s);
+		if(d==10||d==11)
+		{
+			if(s+2<=st.sk)
+			{
+				sp x1=sts(s+1),x2=sts(s+2);
+				if(d==10)x1=sts(x1);
+				sts(x2)=x1;
+			}
+			s+=3;
+		}
+		else if(d==20||d==21)
+		{
+			if(s+3<=st.sk)
+			{
+				sp x1=sts(s+1),x2=sts(s+2),x3=sts(s+3);
+				if(d==20)x1=sts(x1);
+				sts(x3)=x1+sts(x2);
+			}
+			s+=4;
+		}
+		else if(d==30||d==31)
+		{
+			if(s+3<=st.sk)
+			{
+				sp x1=sts(s+1),x2=sts(s+2),x3=sts(s+3);
+				if(d==30)x1=sts(x1);
+				x2=sts(x2);
+				sts(x3)=x1>x2?x1-x2:x2-x1;
+			}
+			s+=4;
+		}
+		else if(d==40||d==41)
+		{
+			if(s+3<=st.sk)
+			{
+				sp x1=sts(s+1),x2=sts(s+2),x3=sts(s+3);
+				if(d==40)x1=sts(x1);
+				sts(x3)=x1*sts(x2);
+			}
+			s+=4;
+		}
+		else if(d==50||d==51)
+		{
+			if(s+3<=st.sk)
+			{
+				sp x1=sts(s+1),x2=sts(s+2),x3=sts(s+3);
+				if(d==50)x1=sts(x1);
+				sts(x3)=x1<sts(x2);
+			}
+			s+=4;
+		}
+		else if(d==60||d==61)
+		{
+			if(s+3<=st.sk)
+			{
+				sp x1=sts(s+1),x2=sts(s+2),x3=sts(s+3);
+				if(d==60)x1=sts(x1);
+				sts(x3)=x1==sts(x2);
+			}
+			s+=4;
+		}
+		else if(d==70||d==71)
+		{
+			if(s+1<=st.sk)
+			{
+				sp x1=sts(s+1);
+				if(d==70)x1=sts(x1);
+				s=x1;
+			}
+			else s+=2;
+		}
+		else if(d==80||d==81)
+		{
+			if(s+2<=st.sk)
+			{
+				sp x1=sts(s+1),x2=sts(s+2);
+				if(d==80)x1=sts(x1);
+				if(x1)s=sts(x2);
+				else s+=3;
+			}
+			else s+=3;
+		}
+		else s++;
 		return 1;
 	}
 }
