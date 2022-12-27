@@ -293,13 +293,11 @@ bool yk()
 }
 void dsk(int d)
 {
-	auto cs=[](){return st.ls>sts(4)&&st.ls<sts(5);};
 	if(d==4)
 	{
 		st.ls++;
 		if(st.ls>st.sk)st.ls--;
 		if(st.ls-st.ds>(size_t)(st.ps*st.l2))st.ds+=st.l2;
-		if(!cs())st.tks[0]='0';
 	}
 	else if(d==2)
 	{
@@ -311,7 +309,6 @@ void dsk(int d)
 	{
 		if(st.ls>1)st.ls--;
 		if(st.ds>=st.ls)st.ds-=st.l2;
-		if(!cs())st.tks[0]='0';
 	}
 	else if(d==1)
 	{
@@ -323,7 +320,7 @@ void dsk(int d)
 	else if(d>4&&d<15)
 	{
 		int p=d-5;
-		if(p==1&&cs())
+		if(p==1)
 		{
 			st.tks[0]='1';
 			st.tr.p=0;
@@ -344,9 +341,10 @@ void dsk(int d)
 }
 void spk(int d)
 {
+	auto cs=[](){return st.ls>sts(4)&&st.ls<sts(5);};
 	if(d==3)dsk(3);
 	else if(d==4)dsk(4);
-	else if(d==1)
+	else if(d==1&&cs())
 	{
 		sts(st.ls)/=10;
 	}
@@ -355,7 +353,7 @@ void spk(int d)
 		st.tks[0]='0';
 		st.tr.p=0;
 	}
-	else if(d>4&&d<15)
+	else if(d>4&&d<15&&cs())
 	{
 		int p=d-5;
 		sp s=sts(st.ls);
