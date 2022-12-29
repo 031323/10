@@ -16,6 +16,8 @@ sp ps[10][pd]=
 		0,0,10,5,9},
 	{0,
 		0,0,18,17,19,40,18,18,19,20,19,18,20,61,380,20,1},
+	{0,
+		},
 };
 struct
 {
@@ -54,6 +56,7 @@ sp& sts(size_t k)
 {
 	return k==st.sk?st.s[0]:st.s[k];
 }
+auto cs=[](){return st.ls>sts(4)&&st.ls<sts(5);};
 struct nl
 {
 	int n=0;
@@ -134,7 +137,7 @@ void lk()
 		for(int k=0;(k<lsk&&pn>0)||k==0;k++,pn/=10)
 			ns(pn%10,p1-2+(lsk+1)*(1+(int)(sk/l2))-k,p2+(sk%l2),0);
 	}
-	if(1)nl({.n=st.tks[0]=='0'?16:st.tks[0]=='1'?26:24,.p1=(float)(p1-1+(lsk+1)*(1+(int)((st.ls-1-st.ds)/l2))),.p2=(float)(p2+((st.ls-1-st.ds)%l2)),
+	if(1)nl({.n=st.tks[0]=='0'?16:st.tks[0]=='1'?(cs()?26:24):28,.p1=(float)(p1-1+(lsk+1)*(1+(int)((st.ls-1-st.ds)/l2))),.p2=(float)(p2+((st.ls-1-st.ds)%l2)),
 			.rm=255,.hm=255,.nm=255})();
 	SDL_UnlockTexture(st.mc1);
 	SDL_SetRenderTarget(st.ck,st.mc2);
@@ -159,7 +162,7 @@ void mk()
 		st.s2=st.p2;
 		float d1=((float)x2/(float)(st.s2)*(float)st.sp1/(float)st.sp2);
 		st.s1=ceil((float)x1/d1);
-		SDL_ShowCursor(SDL_DISABLE);
+		if(!jt)SDL_ShowCursor(SDL_DISABLE);
 	}
 	else
 	{
@@ -341,7 +344,6 @@ void dsk(int d)
 }
 void spk(int d)
 {
-	auto cs=[](){return st.ls>sts(4)&&st.ls<sts(5);};
 	if(d==3)dsk(3);
 	else if(d==4)dsk(4);
 	else if(d==1&&cs())
@@ -377,7 +379,7 @@ void nk()
 		{
 			int k1=(double)(s1-st.pd.x)/(double)st.pd.w*(double)st.s1;
 			int k2=round((double)(s2-st.pd.y)/(double)st.pd.h*(double)st.s2)-st.s2+6;
-			printf("%d %d \n",k1,k2);
+			if(0)printf("%d %d \n",k1,k2);
 			return k2<0?-1:(k2/2)*5+k1/3;
 		};
 		auto ts=[&g]()
@@ -474,7 +476,7 @@ void nk()
 			if(st.tr.p==0)
 			{
 				int n=ss(g.button.x,g.button.y);
-				if(n>0&&n<15)
+				if(st.tp&&n>0&&n<15)
 				{
 					st.tr.p=2;
 					st.tr.n=n;
@@ -524,7 +526,6 @@ void nk()
 int main()
 {
 	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS);
-	SDL_ShowCursor(SDL_DISABLE);
 #ifdef EMSCRIPTEN
 	jt=1;
 	st.cp=SDL_CreateWindow(0,0,0,
@@ -532,6 +533,7 @@ int main()
 			EM_ASM_INT({return window.visualViewport.height;}),
 			SDL_WINDOW_RESIZABLE);
 #else
+	SDL_ShowCursor(SDL_DISABLE);
 	st.cp=SDL_CreateWindow(0,0,0,0,0,SDL_WINDOW_FULLSCREEN_DESKTOP);
 #endif
 	st.ck=SDL_CreateRenderer(st.cp,-1,SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE);
