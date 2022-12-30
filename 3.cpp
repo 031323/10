@@ -17,7 +17,7 @@ sp ps[10][pd]=
 	{0,
 		0,0,18,17,19,40,18,18,19,20,19,18,20,61,380,20,1},
 	{0,
-		},
+		0,0,},
 };
 struct
 {
@@ -52,6 +52,8 @@ struct
 	int lsk=5;
 	unsigned long int g=1;
 }st;
+static size_t dg[]={1,10,100,1000,10000,100000,1000000,10000000,100000000};
+size_t cts(){return dg[st.lsk]-1<st.sk?dg[st.lsk]-1:st.sk;}
 sp& sts(size_t k)
 {
 	return k==st.sk?st.s[0]:st.s[k];
@@ -225,6 +227,7 @@ bool yk()
 				sp x1=sts(s+1),x2=sts(s+2),x3=sts(s+3);
 				if(d==20)x1=sts(x1);
 				sts(x3)=x1+sts(x2);
+				if(sts(x3)>cts())sts(x3)=0;
 			}
 			s+=4;
 		}
@@ -246,6 +249,7 @@ bool yk()
 				sp x1=sts(s+1),x2=sts(s+2),x3=sts(s+3);
 				if(d==40)x1=sts(x1);
 				sts(x3)=x1*sts(x2);
+				if(sts(x3)>cts())sts(x3)=0;
 			}
 			s+=4;
 		}
@@ -359,9 +363,8 @@ void spk(int d)
 	{
 		int p=d-5;
 		sp s=sts(st.ls);
-		static size_t dg[]={1,10,100,1000,10000,100000};
 		size_t nn=s*10+p;
-		if(nn<dg[st.lsk]&&(nn<=st.sk))
+		if(nn<=cts())
 			sts(st.ls)=nn;
 		st.tr.p=0;
 	}
