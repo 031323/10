@@ -101,6 +101,8 @@ void cnk(int k,int m1,int m2,float p1,float p2)
 }
 void pss(size_t pk)
 {
+	st.ls=1;
+	st.ds=0;
 	st.pk=pk;
 	memset(st.s,0,sizeof(sp)*st.sk);
 	for(size_t k=0;k<pd&&k<(size_t)st.sk;k++)
