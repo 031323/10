@@ -17,7 +17,7 @@ sp ps[10][pd]=
 	{0,
 		0,0,18,17,19,40,18,18,19,20,19,18,20,61,380,20,1},
 	{0,
-		0,0,10000,10,21,71,21,0,0,0,0,0,0,0,0,0,0,0,0,0,71,10000},
+		0,0,10000,10,21,71,21,0,0,0,0,0,0,0,0,0,0,0,0,0,71,6},
 };
 struct
 {
@@ -331,12 +331,12 @@ void dsk(int d)
 		int p=d-5;
 		if(p==1)
 		{
-			st.tks[0]='1';
+			strcpy(st.tks,"1");
 			st.tr.p=0;
 		}
 		else if(p==2)
 		{
-			st.tks[0]='2';
+			strcpy(st.tks,"2");
 			st.tr.p=0;
 			st.g=1;
 		}
@@ -348,7 +348,7 @@ void dsk(int d)
 		}
 		else if(p==4&&jt)
 		{
-			st.tks[0]='4';
+			strcpy(st.tks,"4");
 			st.tr.p=0;
 		}
 	}
@@ -363,7 +363,7 @@ void spk(int d)
 	}
 	else if(d==2)
 	{
-		st.tks[0]='0';
+		strcpy(st.tks,"0");
 		st.tr.p=0;
 	}
 	else if(d>4&&d<15&&cs())
@@ -506,7 +506,7 @@ void nk()
 			if(!yk())
 			{
 				st.tr.p=0;
-				st.tks[0]='0';
+				strcpy(st.tks,"0");
 				break;	
 			}
 		double pk=(double)SDL_GetTicks()/1000.0;
