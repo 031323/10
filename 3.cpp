@@ -19,6 +19,16 @@ sp ps[10][pd]=
 	{0,
 		0,0,10000,10,21,71,21,0,0,0,0,0,0,0,0,0,0,0,0,0,71,6},
 };
+unsigned char dpk(const char ds[])
+{
+	unsigned char g=1,p=0;
+	for(int k=0;k<8;k++)
+	{
+		if(ds[k])p+=g;
+		g<<=1;
+	}
+	return p;
+}
 struct
 {
 	SDL_Window* cp;
@@ -346,7 +356,7 @@ void dsk(int d)
 			ydk();	
 			st.tr.p=0;
 		}
-		else if(p==4&&jt)
+		else if(p==4)
 		{
 			strcpy(st.tks,"4");
 			st.tr.p=0;
