@@ -5,6 +5,8 @@
 compile_commands.json
 .cache
 yt
+mr
+vs
 node_modules
 *.wasm
 yt.js
