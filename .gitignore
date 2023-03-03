@@ -8,4 +8,5 @@ yt
 node_modules
 *.wasm
 yt.js
+*.swp
 *.png
