@@ -3,7 +3,7 @@
 #include<stdlib.h>
 #include<vector>
 #include<string>
-#include<functional>
+#include<wasm.h>
 typedef uint8_t kn;
 typedef std::basic_string<kn> pp; 
 typedef std::vector<std::pair<pp,pp>> lsp;
