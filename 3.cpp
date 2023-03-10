@@ -552,8 +552,8 @@ int main()
 #ifdef EMSCRIPTEN
 	jt=1;
 	st.cp=SDL_CreateWindow(0,0,0,
-			EM_ASM_INT({return window.visualViewport.width;}),
-			EM_ASM_INT({return window.visualViewport.height;}),
+			EM_ASM_INT({return v1();}),
+			EM_ASM_INT({return v2();}),
 			SDL_WINDOW_RESIZABLE);
 #else
 	SDL_ShowCursor(SDL_DISABLE);

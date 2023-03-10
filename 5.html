@@ -6,12 +6,20 @@
 <title>10</title>
 </head>
 <body onresize='r()' style='image-rendering: crisp-edges;margin:0;background-color:black;overflow:hidden'>
-<canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+<canvas style='width:100%;height:100%' id="canvas" oncontextmenu="event.preventDefault()"></canvas>
 <script type='text/javascript'>
 var Module={canvas:(function(){return document.getElementById('canvas');})()};
+function v1()
+{
+	return window.visualViewport.width*window.devicePixelRatio;
+}
+function v2()
+{
+	return window.visualViewport.height*window.devicePixelRatio;
+}
 function r()
 {
-	Module.ccall('pp',null,['number','number'],[window.visualViewport.width,window.visualViewport.height]);
+	Module.ccall('pp',null,['number','number'],[v1(),v2()]);
 }
 </script>
 <script src="yt.js"></script>
