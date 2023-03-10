@@ -6,7 +6,7 @@
 <title>10</title>
 </head>
 <body onresize='r()' style='image-rendering: crisp-edges;margin:0;background-color:black;overflow:hidden'>
-<canvas style='width:100%;height:100%' id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+<canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
 <script type='text/javascript'>
 var Module={canvas:(function(){return document.getElementById('canvas');})()};
 function v1()
@@ -19,7 +19,9 @@ function v2()
 }
 function r()
 {
+	canvas.style.width='';
 	Module.ccall('pp',null,['number','number'],[v1(),v2()]);
+	canvas.style.width='100%';
 }
 </script>
 <script src="yt.js"></script>
