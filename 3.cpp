@@ -578,7 +578,7 @@ int main()
 		SDL_Delay(16);
 	}
 #else
-	EM_ASM({canvas.style.width='100%';});
+	EM_ASM({window.addEventListener('resize',r,true);canvas.style.width='100%';});
 	emscripten_set_main_loop(nk,0,1);
 #endif
 	SDL_DestroyRenderer(st.ck);
