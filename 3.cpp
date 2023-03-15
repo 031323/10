@@ -466,7 +466,7 @@ void nk()
 		}
 		else if(g.type==SDL_KEYUP)
 		{
-			if((st.tr.p==1)&&ts()==st.tr.n)st.tr.p=0;
+			if((st.tr.p==1)&&(ts()==st.tr.n||(st.tr.n>4&&ts()==st.tr.n+10)))st.tr.p=0;
 			tps[ts()]=0;
 		}
 		else if(g.type==SDL_KEYDOWN)
